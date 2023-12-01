@@ -1,0 +1,4 @@
+/target
+
+# Ignore user specific input files as requested by Advent of Code
+/inputs/*.orig.txt
