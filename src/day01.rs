@@ -11,7 +11,7 @@ const LINE_PART2_RE_STR: &str = concatcp!("(?m)^(?U:.*)", NUM_PART2_RE, r".*", N
 
 
 pub fn day01() -> Result<(), Box<dyn std::error::Error>> {
-    for file in utils::input_files("day01") {
+    for file in utils::input_files("day01")? {
         handle(run(&file, false));
         handle(run(&file, true));
     }
@@ -50,7 +50,7 @@ fn parse_num(c: &str) -> u32 {
     }
 }
 
-pub fn sum_lines<R: std::io::BufRead>(reader: R, part2: bool) -> Result<u32, Box<dyn std::error::Error>> {
+fn sum_lines<R: std::io::BufRead>(reader: R, part2: bool) -> Result<u32, Box<dyn std::error::Error>> {
     let mut sum = 0;
 
     let num_re;
