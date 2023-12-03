@@ -26,7 +26,7 @@ fn handle(result: Result<(u32, u32), Box<dyn std::error::Error>>) {
 }
 
 fn run(file: &str) -> Result<(u32, u32), Box<dyn std::error::Error>> {
-    println!("DAY02: Part1: {}", file);
+    println!("DAY02: {}", file);
 
     let file = std::fs::File::open(file)?;
     let reader = std::io::BufReader::new(file);
