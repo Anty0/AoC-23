@@ -83,7 +83,7 @@ impl Schematic {
 
     fn gear_values(&self) -> impl Iterator<Item = Vec<u32>> + '_ {
         self.gear_ids()
-            .map(move |ids| ids.iter().map(move |id| self.id_to_value[&id]).collect::<Vec<u32>>())
+            .map(move |ids| ids.iter().map(move |id| self.id_to_value[id]).collect::<Vec<u32>>())
     }
 }
 
