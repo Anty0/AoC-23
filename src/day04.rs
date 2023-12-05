@@ -5,7 +5,7 @@ use std::collections::VecDeque;
 use crate::utils;
 
 const NUM_RE: &str = r"([0-9]+)";
-const LINE_RE: &str = r"^Card +(?<card_id>[0-9]+): (?<winning>.*) \| (?<available>.*)$";
+const LINE_RE: &str = r"^Card +(?P<card_id>[0-9]+): (?P<winning>.*) \| (?P<available>.*)$";
 
 pub fn day04() -> Result<(), Box<dyn std::error::Error>> {
     for file in utils::input_files("day04")? {
@@ -14,18 +14,16 @@ pub fn day04() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-
 fn handle(result: Result<(u32, u32), Box<dyn std::error::Error>>) {
     match result {
-        Ok((sum_p1, sum_p2)) =>
-            println!("Result: Part1={} Part2={}", sum_p1, sum_p2),
+        Ok((sum_p1, sum_p2)) => println!("Result: Part1={} Part2={}", sum_p1, sum_p2),
         Err(e) => println!("Error: {}", e),
     }
     println!();
 }
 
 fn run(file: &str) -> Result<(u32, u32), Box<dyn std::error::Error>> {
-    println!("DAY02: Part1: {}", file);
+    println!("DAY04: {}", file);
 
     let file = std::fs::File::open(file)?;
     let reader = std::io::BufReader::new(file);
@@ -67,7 +65,7 @@ fn count_nums<R: std::io::BufRead>(reader: R) -> Result<(u32, u32), Box<dyn std:
                 }
             }
 
-            for i in 1 ..= count {
+            for i in 1..=count {
                 let curr = multiplier_queue.get((i - 1).try_into().unwrap());
                 if let Some(curr) = curr {
                     multiplier_queue[(i - 1).try_into().unwrap()] = curr + curr_multiplier;
@@ -83,7 +81,7 @@ fn count_nums<R: std::io::BufRead>(reader: R) -> Result<(u32, u32), Box<dyn std:
                 if count == 1 {
                     sum_p1 += 1;
                 } else {
-                    sum_p1 += 2_u32.pow(count-1);
+                    sum_p1 += 2_u32.pow(count - 1);
                 }
             }
         } else {

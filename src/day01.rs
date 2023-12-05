@@ -1,14 +1,15 @@
-use regex::Regex;
 use const_format::concatcp;
+use regex::Regex;
 
 use crate::utils;
 
 const NUM_PART1_RE: &str = "([0-9])";
 const NUM_PART2_RE: &str = "([0-9]|one|two|three|four|five|six|seven|eight|nine)";
 
-const LINE_PART1_RE_STR: &str = concatcp!("(?m)^(?U:.*)", NUM_PART1_RE, r".*", NUM_PART1_RE, r".*$");
-const LINE_PART2_RE_STR: &str = concatcp!("(?m)^(?U:.*)", NUM_PART2_RE, r".*", NUM_PART2_RE, r".*$");
-
+const LINE_PART1_RE_STR: &str =
+    concatcp!("(?m)^(?U:.*)", NUM_PART1_RE, r".*", NUM_PART1_RE, r".*$");
+const LINE_PART2_RE_STR: &str =
+    concatcp!("(?m)^(?U:.*)", NUM_PART2_RE, r".*", NUM_PART2_RE, r".*$");
 
 pub fn day01() -> Result<(), Box<dyn std::error::Error>> {
     for file in utils::input_files("day01")? {
@@ -50,7 +51,10 @@ fn parse_num(c: &str) -> u32 {
     }
 }
 
-fn sum_lines<R: std::io::BufRead>(reader: R, part2: bool) -> Result<u32, Box<dyn std::error::Error>> {
+fn sum_lines<R: std::io::BufRead>(
+    reader: R,
+    part2: bool,
+) -> Result<u32, Box<dyn std::error::Error>> {
     let mut sum = 0;
 
     let num_re;
@@ -74,7 +78,7 @@ fn sum_lines<R: std::io::BufRead>(reader: R, part2: bool) -> Result<u32, Box<dyn
                 // Multiple numbers present
                 num1 = parse_num(captures.get(1).unwrap().as_str());
                 num2 = parse_num(captures.get(2).unwrap().as_str());
-            },
+            }
             None => {
                 // Only one number present
                 let captures_num = num_re.captures(l.as_str());
@@ -82,13 +86,13 @@ fn sum_lines<R: std::io::BufRead>(reader: R, part2: bool) -> Result<u32, Box<dyn
                     Some(captures_num) => {
                         num1 = parse_num(captures_num.get(1).unwrap().as_str());
                         num2 = num1
-                    },
+                    }
                     None => {
                         // No numbers present - invalid line
-                        return Err(Box::new(std::io::Error::new(
+                        return Err(std::io::Error::new(
                             std::io::ErrorKind::InvalidData,
-                            "No match"
-                        )));
+                            "No match",
+                        ).into());
                     }
                 }
             }

@@ -1,10 +1,10 @@
-use std::cmp;
-use regex::Regex;
 use const_format::concatcp;
+use regex::Regex;
+use std::cmp;
 
 use crate::utils;
 
-const COLOR_RE: &str = r"(?<amount>[0-9]+) (?<color>red|green|blue)";
+const COLOR_RE: &str = r"(?P<amount>[0-9]+) (?P<color>red|green|blue)";
 // const ROUND_RE: &str = concatcp!(" *(", COLOR_RE, r"[,;]?)* *");
 const LINE_RE: &str = concatcp!("^Game (?<game_id>[0-9]+): (?<games>.*)$");
 
@@ -15,11 +15,9 @@ pub fn day02() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-
 fn handle(result: Result<(u32, u32), Box<dyn std::error::Error>>) {
     match result {
-        Ok((sum_p1, sum_p2)) =>
-            println!("Result: Part1={} Part2={}", sum_p1, sum_p2),
+        Ok((sum_p1, sum_p2)) => println!("Result: Part1={} Part2={}", sum_p1, sum_p2),
         Err(e) => println!("Error: {}", e),
     }
     println!();
@@ -64,10 +62,12 @@ fn sum_lines<R: std::io::BufRead>(reader: R) -> Result<(u32, u32), Box<dyn std::
                     "red" => RED,
                     "green" => GREEN,
                     "blue" => BLUE,
-                    _ => return Err(Box::new(std::io::Error::new(
-                        std::io::ErrorKind::InvalidData,
-                        "Invalid color"
-                    )))
+                    _ => {
+                        return Err(std::io::Error::new(
+                            std::io::ErrorKind::InvalidData,
+                            "Invalid color",
+                        ).into())
+                    }
                 };
 
                 if amount > limit {
@@ -78,10 +78,12 @@ fn sum_lines<R: std::io::BufRead>(reader: R) -> Result<(u32, u32), Box<dyn std::
                     "red" => min_red = cmp::max(min_red, amount),
                     "green" => min_green = cmp::max(min_green, amount),
                     "blue" => min_blue = cmp::max(min_blue, amount),
-                    _ => return Err(Box::new(std::io::Error::new(
-                        std::io::ErrorKind::InvalidData,
-                        "Invalid color"
-                    )))
+                    _ => {
+                        return Err(std::io::Error::new(
+                            std::io::ErrorKind::InvalidData,
+                            "Invalid color",
+                        ).into())
+                    }
                 }
 
                 // println!("{}: {}", amount, color);
@@ -93,10 +95,10 @@ fn sum_lines<R: std::io::BufRead>(reader: R) -> Result<(u32, u32), Box<dyn std::
 
             sum_p2 += min_red * min_green * min_blue;
         } else {
-            return Err(Box::new(std::io::Error::new(
+            return Err(std::io::Error::new(
                 std::io::ErrorKind::InvalidData,
-                "No match"
-            )));
+                "No match",
+            ).into());
         }
     }
 
