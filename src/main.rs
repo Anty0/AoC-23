@@ -8,6 +8,7 @@ mod day05;
 mod day06;
 mod day07;
 mod day08;
+mod day09;
 mod utils;
 
 fn handle(result: result::Result<(), Box<dyn std::error::Error>>) {
@@ -25,4 +26,5 @@ fn main() {
     handle(day06::day06());
     handle(day07::day07());
     handle(day08::day08());
+    handle(day09::day09());
 }
