@@ -92,7 +92,8 @@ fn sum_lines<R: std::io::BufRead>(
                         return Err(std::io::Error::new(
                             std::io::ErrorKind::InvalidData,
                             "No match",
-                        ).into());
+                        )
+                        .into());
                     }
                 }
             }

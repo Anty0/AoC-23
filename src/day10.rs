@@ -1,5 +1,5 @@
-use std::{io::BufRead, collections::HashMap, collections::HashSet};
 use crate::utils;
+use std::{collections::HashMap, collections::HashSet, io::BufRead};
 
 type PipeShape = char;
 
@@ -26,19 +26,19 @@ fn dir_invert(dir: (i64, i64)) -> (i64, i64) {
 fn shape_connects_to(shape: PipeShape, direction: (i64, i64)) -> bool {
     matches!(
         (shape, direction),
-        ('|', (0, -1)) |
-        ('|', (0, 1)) |
-        ('-', (-1, 0)) |
-        ('-', (1, 0)) |
-        ('L', (0, -1)) |
-        ('L', (1, 0)) |
-        ('J', (0, -1)) |
-        ('J', (-1, 0)) |
-        ('7', (0, 1)) |
-        ('7', (-1, 0)) |
-        ('F', (0, 1)) |
-        ('F', (1, 0)) |
-        ('S', _)
+        ('|', (0, -1))
+            | ('|', (0, 1))
+            | ('-', (-1, 0))
+            | ('-', (1, 0))
+            | ('L', (0, -1))
+            | ('L', (1, 0))
+            | ('J', (0, -1))
+            | ('J', (-1, 0))
+            | ('7', (0, 1))
+            | ('7', (-1, 0))
+            | ('F', (0, 1))
+            | ('F', (1, 0))
+            | ('S', _)
     )
 }
 
@@ -66,10 +66,9 @@ fn shape_neighbors_right(shape: PipeShape, dir: (i64, i64)) -> Vec<(i64, i64)> {
         _ => {
             println!("{} {:?}", shape, dir);
             vec![]
-        },
+        }
     }
 }
-
 
 fn shape_neighbors_left(shape: PipeShape, dir: (i64, i64)) -> Vec<(i64, i64)> {
     match (shape, dir) {
@@ -91,7 +90,6 @@ fn shape_neighbors_left(shape: PipeShape, dir: (i64, i64)) -> Vec<(i64, i64)> {
         _ => vec![],
     }
 }
-
 
 // fn print_map(map: &PipeMap, highlight1: &HashSet<(usize, usize)>, highlight2: &HashSet<(usize, usize)>, directions: &HashMap<(usize, usize), (i64, i64)>) {
 //     for (y, row) in map.map.iter().enumerate() {
@@ -170,10 +168,7 @@ fn parse_pipe_map<R: std::io::BufRead>(
         map.push(row);
     }
 
-    Ok(PipeMap {
-        map,
-        start,
-    })
+    Ok(PipeMap { map, start })
 }
 
 fn solve_p1(map: &PipeMap) -> Option<u64> {
@@ -198,7 +193,11 @@ fn solve_p1(map: &PipeMap) -> Option<u64> {
         for dir in &ALL_DIRECTIONS {
             let (dx, dy) = dir;
             let new_pos = (x as i64 + dx, y as i64 + dy);
-            if new_pos.0 < 0 || new_pos.1 < 0 || new_pos.0 >= width as i64 || new_pos.1 >= height as i64 {
+            if new_pos.0 < 0
+                || new_pos.1 < 0
+                || new_pos.0 >= width as i64
+                || new_pos.1 >= height as i64
+            {
                 continue;
             }
             let new_pos = (new_pos.0 as usize, new_pos.1 as usize);
@@ -220,7 +219,11 @@ fn solve_p1(map: &PipeMap) -> Option<u64> {
     visited.values().max().copied()
 }
 
-fn flood_fill(map: &PipeMap, edges: &HashSet<(usize, usize)>, queue: &mut Vec<(usize, usize)>) -> (HashSet<(usize, usize)>, bool) {
+fn flood_fill(
+    map: &PipeMap,
+    edges: &HashSet<(usize, usize)>,
+    queue: &mut Vec<(usize, usize)>,
+) -> (HashSet<(usize, usize)>, bool) {
     // Flood fill limited by set of edge pipes
 
     // Assume map is rectangular
@@ -241,7 +244,11 @@ fn flood_fill(map: &PipeMap, edges: &HashSet<(usize, usize)>, queue: &mut Vec<(u
         for dir in &ALL_DIRECTIONS {
             let (dx, dy) = dir;
             let new_pos = (x as i64 + dx, y as i64 + dy);
-            if new_pos.0 < 0 || new_pos.1 < 0 || new_pos.0 >= width as i64 || new_pos.1 >= height as i64 {
+            if new_pos.0 < 0
+                || new_pos.1 < 0
+                || new_pos.0 >= width as i64
+                || new_pos.1 >= height as i64
+            {
                 overflow = true;
                 continue;
             }
@@ -266,7 +273,7 @@ fn solve_p2(map: &PipeMap) -> Option<u64> {
     // let mut directions = HashMap::new();
     let mut visited = HashSet::new();
     let mut queue = Vec::new();
-    
+
     // We use these to initialize the flood fill
     // We need to check both sides of the loop to see which one is outside
     // (it should be possible also to figure this out by summing up all right/left
@@ -284,7 +291,11 @@ fn solve_p2(map: &PipeMap) -> Option<u64> {
         for dir in &ALL_DIRECTIONS {
             let (dx, dy) = dir;
             let new_pos = (x as i64 + dx, y as i64 + dy);
-            if new_pos.0 < 0 || new_pos.1 < 0 || new_pos.0 >= width as i64 || new_pos.1 >= height as i64 {
+            if new_pos.0 < 0
+                || new_pos.1 < 0
+                || new_pos.0 >= width as i64
+                || new_pos.1 >= height as i64
+            {
                 continue;
             }
             let new_pos = (new_pos.0 as usize, new_pos.1 as usize);
@@ -303,15 +314,23 @@ fn solve_p2(map: &PipeMap) -> Option<u64> {
 
                     for fill_dir in shape_neighbors_left(*new_shape, dir_invert(*dir)) {
                         let fill_pos = (nx as i64 + fill_dir.0, ny as i64 + fill_dir.1);
-                        if !(fill_pos.0 < 0 || fill_pos.1 < 0 || fill_pos.0 >= width as i64 || fill_pos.1 >= height as i64) {
+                        if !(fill_pos.0 < 0
+                            || fill_pos.1 < 0
+                            || fill_pos.0 >= width as i64
+                            || fill_pos.1 >= height as i64)
+                        {
                             let fill_pos = (fill_pos.0 as usize, fill_pos.1 as usize);
                             fill_queue_right.push(fill_pos);
                         }
                     }
-                    
+
                     for fill_dir in shape_neighbors_right(*new_shape, dir_invert(*dir)) {
                         let fill_pos = (nx as i64 + fill_dir.0, ny as i64 + fill_dir.1);
-                        if !(fill_pos.0 < 0 || fill_pos.1 < 0 || fill_pos.0 >= width as i64 || fill_pos.1 >= height as i64) {
+                        if !(fill_pos.0 < 0
+                            || fill_pos.1 < 0
+                            || fill_pos.0 >= width as i64
+                            || fill_pos.1 >= height as i64)
+                        {
                             let fill_pos = (fill_pos.0 as usize, fill_pos.1 as usize);
                             fill_queue_left.push(fill_pos);
                         }
@@ -333,7 +352,8 @@ fn solve_p2(map: &PipeMap) -> Option<u64> {
     // fill_visited_right.extend(fill_queue_right);
     // fill_visited_left.extend(fill_queue_left);
 
-    let (fill_visited_right, fill_overflow_right) = flood_fill(map, &visited, &mut fill_queue_right);
+    let (fill_visited_right, fill_overflow_right) =
+        flood_fill(map, &visited, &mut fill_queue_right);
     let (fill_visited_left, fill_overflow_left) = flood_fill(map, &visited, &mut fill_queue_left);
 
     // print_map(map, &visited, &fill_visited_right, &directions);
@@ -344,21 +364,21 @@ fn solve_p2(map: &PipeMap) -> Option<u64> {
             // Both sides of the loop are outside
             // This should not happen
             None
-        },
+        }
         (false, false) => {
             // Both sides of the loop are inside
             // This should not happen
             None
-        },
+        }
         (false, true) => {
             // Right side of the loop is inside
             // Left side of the loop is outside
             Some(fill_visited_right.len() as u64)
-        },
+        }
         (true, false) => {
             // Right side of the loop is outside
             // Left side of the loop is inside
             Some(fill_visited_left.len() as u64)
-        },
+        }
     }
 }

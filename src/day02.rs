@@ -66,7 +66,8 @@ fn sum_lines<R: std::io::BufRead>(reader: R) -> Result<(u32, u32), Box<dyn std::
                         return Err(std::io::Error::new(
                             std::io::ErrorKind::InvalidData,
                             "Invalid color",
-                        ).into())
+                        )
+                        .into())
                     }
                 };
 
@@ -82,7 +83,8 @@ fn sum_lines<R: std::io::BufRead>(reader: R) -> Result<(u32, u32), Box<dyn std::
                         return Err(std::io::Error::new(
                             std::io::ErrorKind::InvalidData,
                             "Invalid color",
-                        ).into())
+                        )
+                        .into())
                     }
                 }
 
@@ -95,10 +97,7 @@ fn sum_lines<R: std::io::BufRead>(reader: R) -> Result<(u32, u32), Box<dyn std::
 
             sum_p2 += min_red * min_green * min_blue;
         } else {
-            return Err(std::io::Error::new(
-                std::io::ErrorKind::InvalidData,
-                "No match",
-            ).into());
+            return Err(std::io::Error::new(std::io::ErrorKind::InvalidData, "No match").into());
         }
     }
 

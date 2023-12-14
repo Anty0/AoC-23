@@ -37,7 +37,8 @@ fn run(file: &str, part2: bool) -> Result<u64, Box<dyn std::error::Error>> {
 }
 
 fn parse_input<R: std::io::BufRead>(
-    reader: &mut R, part2: bool,
+    reader: &mut R,
+    part2: bool,
 ) -> Result<Vec<Race>, Box<dyn std::error::Error>> {
     let input_re = Regex::new(INPUT_RE)?;
     let num_re = Regex::new(NUM_RE)?;
@@ -74,7 +75,10 @@ fn parse_input<R: std::io::BufRead>(
 
         assert_eq!(times_list.len(), distances_list.len());
 
-        let races = times_list.into_iter().zip(distances_list.into_iter()).collect();
+        let races = times_list
+            .into_iter()
+            .zip(distances_list.into_iter())
+            .collect();
 
         return Ok(races);
     }
@@ -120,7 +124,7 @@ fn solution_range(time: u64, distance: u64) -> (u64, u64) {
     //     from = cmp::min(from, i);
     //     to = cmp::max(to, i);
     // }
-    
+
     // println!("{} {} - {} {} - {}", time, distance, from, to, to - from + 1);
     (from, to)
 }

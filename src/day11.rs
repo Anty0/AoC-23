@@ -1,5 +1,5 @@
-use std::{io::BufRead, collections::HashSet};
-use core::ops::Range;
+use std::{collections::HashSet, io::BufRead};
+
 use crate::utils;
 
 struct MapInfo {
@@ -38,9 +38,7 @@ fn run(file: &str, part2: bool) -> Result<usize, Box<dyn std::error::Error>> {
     Ok(result)
 }
 
-fn parse_map<R: std::io::BufRead>(
-    reader: &mut R,
-) -> Result<MapInfo, Box<dyn std::error::Error>> {
+fn parse_map<R: std::io::BufRead>(reader: &mut R) -> Result<MapInfo, Box<dyn std::error::Error>> {
     let mut map = Vec::new();
     let mut max_x = 0;
     let mut non_empty_x = HashSet::new();
@@ -60,8 +58,8 @@ fn parse_map<R: std::io::BufRead>(
                     map.push((x, y));
                     empty = false;
                     non_empty_x.insert(x);
-                },
-                '.' => {},
+                }
+                '.' => {}
                 _ => return Err(format!("Invalid char: {}", c).into()),
             }
         }
@@ -71,44 +69,81 @@ fn parse_map<R: std::io::BufRead>(
         }
     }
 
-    let empty_x = (0..max_x)
-        .filter(|&x| !non_empty_x.contains(&x))
-        .collect();
+    let empty_x = (0..max_x).filter(|&x| !non_empty_x.contains(&x)).collect();
 
-    Ok(MapInfo { map, empty_x, empty_y })
+    Ok(MapInfo {
+        map,
+        empty_x,
+        empty_y,
+    })
 }
 
-fn iter_path(from: usize, to: usize) -> Range<usize> {
-    if from < to {
-        from..to
+// fn iter_path(from: usize, to: usize) -> Range<usize> {
+//     if from < to {
+//         from..to
+//     } else {
+//         to..from
+//     }
+// }
+
+fn abs_diff(v1: usize, v2: usize) -> usize {
+    if v1 < v2 {
+        v2 - v1
     } else {
-        to..from
+        v1 - v2
     }
 }
 
 fn solve(map: &MapInfo, part2: bool) -> Option<usize> {
-    let mut sum = 0;
-
     let expanded_value = if part2 { 1000000 } else { 2 };
 
-    for i in 0..map.map.len() {
-        for j in i+1..map.map.len() {
-            let (x1, y1) = map.map[i];
-            let (x2, y2) = map.map[j];
+    let mut updated_map = Vec::new();
 
-            let distance =
-                iter_path(x1, x2)
-                    .map(|x| map.empty_x.contains(&x))
-                    .map(|x| if x { expanded_value } else { 1 })
-                    .sum::<usize>() +
-                iter_path(y1, y2)
-                    .map(|y| map.empty_y.contains(&y))
-                    .map(|y| if y { expanded_value } else { 1 })
-                    .sum::<usize>();
-            
-            sum += distance;
-        }
+    for (x, y) in &map.map {
+        let x = (0..*x)
+            .map(|x| map.empty_x.contains(&x))
+            .map(|x| if x { expanded_value } else { 1 })
+            .sum::<usize>();
+        let y = (0..*y)
+            .map(|y| map.empty_y.contains(&y))
+            .map(|y| if y { expanded_value } else { 1 })
+            .sum::<usize>();
+        updated_map.push((x, y));
     }
 
-    Some(sum)
+    updated_map
+        .iter()
+        .enumerate()
+        .map(|(i, (x1, y1))| {
+            updated_map
+                .iter()
+                .skip(i + 1)
+                .map(|(x2, y2)| abs_diff(*x1, *x2) + abs_diff(*y1, *y2))
+                .sum::<usize>()
+        })
+        .sum::<usize>()
+        .into()
+
+    // let mut sum = 0;
+
+    // for i in 0..map.map.len() {
+    //     let (x1, y1) = map.map[i];
+    //     for j in i+1..map.map.len() {
+    //         let (x2, y2) = map.map[j];
+
+    //         let distance =
+    //             iter_path(x1, x2)
+    //                 .map(|x| map.empty_x.contains(&x))
+    //                 .map(|x| if x { expanded_value } else { 1 })
+    //                 .sum::<usize>() +
+    //             iter_path(y1, y2)
+    //                 .map(|y| map.empty_y.contains(&y))
+    //                 .map(|y| if y { expanded_value } else { 1 })
+    //                 .sum::<usize>();
+
+    //         sum += distance;
+    //     }
+    // }
+
+    // Some(sum)
 }

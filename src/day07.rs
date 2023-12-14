@@ -100,7 +100,8 @@ fn calculate_type(amounts: Amounts) -> Result<Type, Box<dyn std::error::Error>> 
 }
 
 fn parse_input<R: std::io::BufRead>(
-    reader: R, part2: bool,
+    reader: R,
+    part2: bool,
 ) -> Result<Vec<Game>, Box<dyn std::error::Error>> {
     let game_re = Regex::new(GAME_RE)?;
 

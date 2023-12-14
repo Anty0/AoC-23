@@ -1,6 +1,6 @@
-use std::{io::BufRead, collections::HashMap};
 use itertools::Itertools;
 use regex::Regex;
+use std::{collections::HashMap, io::BufRead};
 
 use crate::utils;
 
@@ -48,7 +48,7 @@ fn run(file: &str, part2: bool) -> Result<u64, Box<dyn std::error::Error>> {
     assert_eq!(empty_line, "\n");
 
     let (nodes, start_ids, end_ids) = parse_nodes(&mut reader, part2)?;
-    
+
     // println!("{:?}", path);
     // println!("{:?}", nodes);
     // println!("{:?}", node_map);
@@ -91,7 +91,8 @@ fn parse_path<R: std::io::BufRead>(
 }
 
 fn parse_nodes<R: std::io::BufRead>(
-    reader: &mut R, part2: bool
+    reader: &mut R,
+    part2: bool,
 ) -> Result<(Nodes, Vec<usize>, Vec<usize>), Box<dyn std::error::Error>> {
     let node_re = Regex::new(NODE_RE)?;
 
@@ -101,7 +102,7 @@ fn parse_nodes<R: std::io::BufRead>(
     let mut start_id = Vec::new();
     let mut end_id = Vec::new();
 
-    for (id, line) in reader.lines(). enumerate() {
+    for (id, line) in reader.lines().enumerate() {
         let line = line?;
         let captures = node_re.captures(&line);
 
@@ -156,8 +157,16 @@ fn find_cycle(nodes: &Nodes, path: &[usize], start_id: usize, end_ids: &[usize])
                 return ActorCycle {
                     offset,
                     length,
-                    prefix_end_indexes: step_end_indexes.iter().filter(|&&x| x < offset).copied().collect(),
-                    loop_end_indexes: step_end_indexes.iter().filter(|&&x| x >= offset).map(|&x| x - offset).collect(),
+                    prefix_end_indexes: step_end_indexes
+                        .iter()
+                        .filter(|&&x| x < offset)
+                        .copied()
+                        .collect(),
+                    loop_end_indexes: step_end_indexes
+                        .iter()
+                        .filter(|&&x| x >= offset)
+                        .map(|&x| x - offset)
+                        .collect(),
                 };
             }
 
@@ -237,7 +246,7 @@ fn solve_rec(cycles: &[ActorCycle], stack: &mut Vec<(u64, Option<u64>)>, solutio
 
     let current = &cycles[0];
     let others = &cycles[1..];
-    
+
     for &prefix_end_index in &current.prefix_end_indexes {
         stack.push((prefix_end_index, None));
         solve_rec(others, stack, solutions);
