@@ -1,8 +1,9 @@
-use crate::utils;
 use core::fmt::Debug;
-use itertools::Itertools;
 use regex::Regex;
 use std::{collections::HashMap, io::BufRead, usize};
+use rayon::prelude::*;
+
+use crate::utils;
 
 const LINE_RE: &str = r"^(?P<modes>[.#?]+) (?P<groups>[0-9,]+)$";
 
@@ -139,47 +140,22 @@ fn parse_input<R: std::io::BufRead>(
 fn solve(input: &[Line]) -> Option<usize> {
     // let len = input.len();
     input
-        .iter()
+        .par_iter()
         .map(|line| {
-            // backtrack_groups(
-            //     &mut HashMap::new(),
-            //     &line.modes,
-            //     &line.groups,
-            //     line.groups.iter().sum::<usize>() + line.groups.len() - 1,
-            //     line.modes
-            //         .iter()
-            //         .filter(|m| {
-            //             **m == OperationalMode::Bad || **m == OperationalMode::Unknown
-            //         })
-            //         .count(),
-            //     line.groups.iter().sum::<usize>(),
-            // )
-
-            // Multi-threaded version
-            let line = line.clone();
-            std::thread::spawn(move || {
-                let solutions_count = backtrack_groups(
-                    &mut HashMap::new(),
-                    &line.modes,
-                    &line.groups,
-                    line.groups.iter().sum::<usize>() + line.groups.len() - 1,
-                    line.modes
-                        .iter()
-                        .filter(|m| **m == OperationalMode::Bad || **m == OperationalMode::Unknown)
-                        .count(),
-                    line.groups.iter().sum::<usize>(),
-                );
-                solutions_count
-            })
+            backtrack_groups(
+                &mut HashMap::new(),
+                &line.modes,
+                &line.groups,
+                line.groups.iter().sum::<usize>() + line.groups.len() - 1,
+                line.modes
+                    .iter()
+                    .filter(|m| {
+                        **m == OperationalMode::Bad || **m == OperationalMode::Unknown
+                    })
+                    .count(),
+                line.groups.iter().sum::<usize>(),
+            )
         })
-        .collect_vec() // Force evaluation
-        .into_iter()
-        .map(|handle| handle.join().unwrap())
-        // .enumerate()
-        // .map(|(i, solutions_count)| {
-        //     println!("{}/{}: {}", i, len, solutions_count);
-        //     solutions_count
-        // })
         .sum::<usize>()
         .into()
 

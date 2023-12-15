@@ -1,6 +1,7 @@
-use crate::utils;
 use itertools::Itertools;
 use std::io::BufRead;
+
+use crate::utils;
 
 pub fn day13() -> Result<(), Box<dyn std::error::Error>> {
     for file in utils::input_files("day13")? {

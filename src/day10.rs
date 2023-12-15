@@ -1,5 +1,6 @@
-use crate::utils;
 use std::{collections::HashMap, collections::HashSet, io::BufRead};
+
+use crate::utils;
 
 type PipeShape = char;
 
